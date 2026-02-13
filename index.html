@@ -1,23 +1,115 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
     <title>Eduardo Cervantes Portfolio</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f7f7f7;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #1f2937;
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+
+        header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            color: #d1d5db;
+        }
+
+        main {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .project {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+
+        .project img {
+            width: 300px;
+            object-fit: cover;
+        }
+
+        .project-details {
+            padding: 20px;
+        }
+
+        .project-details h2 {
+            margin-top: 0;
+        }
+
+        .project-details p {
+            line-height: 1.5;
+        }
+
+        .project-details a {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .project-details a:hover {
+            background-color: #1d4ed8;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #6b7280;
+            font-size: 0.9em;
+        }
+    </style>
 </head>
 
 <body>
-    <h1>Eduardo Cervantes Portfolio</h1>
-    <p>Click a project to explore:</p>
 
-    <h2>San Diego Real Estate Map</h2>
-    <img src="san_diego_map/screenshot.png" width="400" alt="Map screenshot">
-    <p>Interactive map showing property price per sqft by ZIP code.</p>
-    <a href="san_diego_map/">View Project</a>
+    <header>
+        <h1>Eduardo Cervantes</h1>
+        <p>Data Analyst & Python Developer | Portfolio of Interactive Projects</p>
+    </header>
 
-    <h2>Other Projects</h2>
-    <ul>
-        <li><a href="https://github.com/eduardocervantes462050/eduardocervantes462050">Code Repo</a></li>
-    </ul>
-</body>
+    <main>
 
-</html>
+        <section class="project">
+            <img src="san_diego_map/screenshot.png" alt="San Diego Real Estate Map">
+            <div class="project-details">
+                <h2>San Diego Real Estate Map</h2>
+                <p>An interactive map showing property price per square foot across ZIP codes in San Diego. Features ZIP
+                    code polygons, color-coded pins, and distance metrics for quick insights.</p>
+                <a href="san_diego_map/">View Project</a>
+            </div>
+        </section>
+
+        <section class="project">
+            <img src="placeholder.png" alt="Other Project">
+            <div class="project-details">
+                <h2>Other Project</h2>
+                <p
