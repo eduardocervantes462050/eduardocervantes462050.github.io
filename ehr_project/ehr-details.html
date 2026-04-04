@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Details | CareCloud EHR Data Warehouse</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: #f9fafb;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #1f2937;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #374151;
+            margin-top: 30px;
+        }
+
+        .metadata {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            background: #f3f4f6;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .metadata div {
+            margin-bottom: 10px;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #4b5563;
+            display: block;
+            text-transform: uppercase;
+            font-size: 0.85em;
+        }
+
+        .er-diagram {
+            width: 100%;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #ddd;
+        }
+
+        .tag {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.9em;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <a href="index.html" class="back-link">← Back to Portfolio</a>
+
+    <article class="container">
+        <h1>1. Project Overview</h1>
+
+        <h2>Project Title</h2>
+        <p><strong>CareCloud EHR Data Warehouse & Reporting Suite</strong></p>
+
+        <h2>Problem Statement / Goal</h2>
+        <p>
+            The goal of my project was to generate daily forecasts from an existing monthly forecast. The CIO needed a
+            visualization that compared weekly objectives to live results in order to track performance against the
+            forecast. However, the original forecast data was only available at the monthly level, which made it
+            difficult to monitor progress and adjust strategies in real time. My solution transformed the monthly data
+            into daily and weekly metrics, enabling accurate, actionable insights for leadership.
+        </p>
+        <blockquote>
+            <strong>The Goal:</strong> The Goal:
+            To transform monthly forecast data into daily and weekly metrics, enabling the CIO to visualize objectives
+            versus live results in real time and make informed decisions to meet business targets.
+        </blockquote>
+
+        <hr>
+
+        <h2>Dataset Description</h2>
+
+        <div class="metadata">
+            <div>
+                <span class="label">Size</span>
+                Approximately 500,000+ rows across 6 core tables.
+            </div>
+            <div>
+                <span class="label">Source</span>
+                Simulated EHR data modeled after real CareCloud export structures (HIPAA-compliant).
+            </div>
+        </div>
+
+        <h3>Data Flow & Pipeline Architecture</h3>
+        <p>The architecture follows a <strong>Linear ETL Pipeline</strong> designed for high-performance clinical
+            reporting. Instead of a traditional star schema, this project utilizes a <strong>Medallion-style
+                flow</strong>where data is ingested from raw source tables and processed through a centralized
+            transformation layer in PostgreSQL.
+        </p>
+
+        <img src="architecture.png" alt="ER Diagram" class="er-diagram">
+
+        <ul>
+            <li><strong>Fact_Encounters:</strong> Stores transactional data including visit types and primary ICD-10
+                codes.</li>
+            <li><strong>Dim_Patients:</strong> Contains demographic data and insurance identifiers.</li>
+            <li><strong>Dim_Providers:</strong> Maps clinical staff to their specific departments and locations.</li>
+            <li><strong>Dim_Charges:</strong> Links clinical encounters to financial line items.</li>
+        </ul>
+        <section>
+            <h2>Key SQL Work</h2>
+
+            <div
+                style="background: #282c34; color: #abb2bf; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-family: 'Courier New', Courier, monospace;">
+                <p style="color: #d19a66; margin-top: 0;">-- CTE for Surgery Estimation</p>
+                <span style="color: #c678dd;">WITH</span> surgery_estimates <span style="color: #c678dd;">AS</span>
+                (<br>
+                &nbsp;&nbsp;<span style="color: #c678dd;">SELECT</span> provider_id, <span
+                    style="color: #61afef;">SUM</span>(charge_amount) <br>
+                &nbsp;&nbsp;<span style="color: #c678dd;">FROM</span> dts__carecloud.charges <br>
+                &nbsp;&nbsp;<span style="color: #c678dd;">GROUP BY</span> 1<br>
+                )<br>
+                <span style="color: #c678dd;">SELECT</span> * <span style="color: #c678dd;">FROM</span>
+                surgery_estimates;
+            </div>
+
+            <p><strong>Highlight:</strong> Used <strong>CTEs</strong> and <strong>Window Functions</strong> to
+                disaggregate monthly forecasts into daily targets, improving reporting granularity by 30x.</p>
+        </section>
+
+        <h2>Tech Stack Used</h2>
+        <div>
+            <span class="tag">Python (Pandas)</span>
+            <span class="tag">PostgreSQL</span>
+            <span class="tag">SQL (Window Functions)</span>
+            <span class="tag">Data Normalization</span>
+        </div>
+    </article>
+
+</body>
+
+</html>

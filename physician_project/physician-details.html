@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Details | Physician Revenue Impact Analysis</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: #f9fafb;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #1f2937;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #374151;
+            margin-top: 30px;
+        }
+
+        .metadata {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            background: #f3f4f6;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .metadata div {
+            margin-bottom: 10px;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #4b5563;
+            display: block;
+            text-transform: uppercase;
+            font-size: 0.85em;
+        }
+
+        .tag {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.9em;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <a href="index.html" class="back-link">← Back to Portfolio</a>
+
+    <article class="container">
+        <h1>2. Project Overview</h1>
+
+        <h2>Project Title</h2>
+        <p><strong>Physician Vacation Revenue Impact Analysis</strong></p>
+
+        <h2>Problem Statement / Goal</h2>
+        <p>
+            Healthcare leadership lacked visibility into the financial impact of physician absences. While providers
+            frequently took vacation or time off, there was no standardized way to quantify the resulting loss in
+            charges, revenue, or compensation. This made it difficult for both physicians and regional directors to
+            plan effectively and ensure revenue targets were met.
+        </p>
+
+        <blockquote>
+            <strong>The Goal:</strong>
+            To build a data model that quantifies the financial impact of physician absences by estimating lost charges,
+            revenue, and compensation—enabling data-driven decisions for scheduling and revenue reallocation.
+        </blockquote>
+
+        <hr>
+
+        <h2>Dataset Description</h2>
+
+        <div class="metadata">
+            <div>
+                <span class="label">Size</span>
+                Multi-table dataset combining provider schedules, charges, collections, and compensation structures.
+            </div>
+            <div>
+                <span class="label">Source</span>
+                Internal healthcare operational and financial data (de-identified).
+            </div>
+        </div>
+
+        <h3>Data Transformation & Methodology</h3>
+        <p>
+            This project focused on transforming fragmented operational and financial data into a unified analytical
+            dataset. The process included:
+        </p>
+
+        <ul>
+            <li>Cleaning and joining multiple source tables into a single structured dataset.</li>
+            <li>Calculating <strong>average daily charges</strong> per provider, clinic, and day of the week over the
+                last 3 months.</li>
+            <li>Estimating <strong>FFS Charges Lost</strong> based on expected productivity during absence periods.</li>
+            <li>Applying historical collection rates to calculate <strong>FFS Revenue Lost</strong>.</li>
+            <li>Integrating provider compensation models to estimate <strong>Doctor Compensation Lost</strong>.</li>
+        </ul>
+
+        <section>
+            <h2>Key SQL Work</h2>
+
+            <div
+                style="background: #282c34; color: #abb2bf; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-family: 'Courier New', Courier, monospace;">
+                <p style="color: #d19a66; margin-top: 0;">-- Average Daily Charges by Provider & Day of Week</p>
+                <span style="color: #c678dd;">WITH</span> avg_daily_charges <span style="color: #c678dd;">AS</span>
+                (<br>
+                &nbsp;&nbsp;<span style="color: #c678dd;">SELECT</span> provider_id,<br>
+                &nbsp;&nbsp;EXTRACT(DOW <span style="color: #c678dd;">FROM</span> service_date) <span
+                    style="color: #c678dd;">AS</span> day_of_week,<br>
+                &nbsp;&nbsp;<span style="color: #61afef;">AVG</span>(charge_amount) <span
+                    style="color: #c678dd;">AS</span> avg_charges<br>
+                &nbsp;&nbsp;<span style="color: #c678dd;">FROM</span> charges<br>
+                &nbsp;&nbsp;<span style="color: #c678dd;">WHERE</span> service_date >= CURRENT_DATE - INTERVAL '3
+                months'<br>
+                &nbsp;&nbsp;<span style="color: #c678dd;">GROUP BY</span> 1,2<br>
+                )<br>
+                <span style="color: #c678dd;">SELECT</span> * <span style="color: #c678dd;">FROM</span>
+                avg_daily_charges;
+            </div>
+
+            <p>
+                <strong>Highlight:</strong> Built a predictive baseline using rolling averages and applied financial
+                logic to estimate revenue and compensation loss at a per-provider level.
+            </p>
+        </section>
+
+        <h2>Business Impact</h2>
+        <ul>
+            <li>Enabled physicians to understand the financial impact of their time off.</li>
+            <li>Provided regional directors with a clear estimate of revenue loss per absence.</li>
+            <li>Supported proactive scheduling and resource reallocation to meet revenue targets.</li>
+        </ul>
+
+        <h2>Tech Stack Used</h2>
+        <div>
+            <span class="tag">SQL (CTEs, Aggregations)</span>
+            <span class="tag">PostgreSQL</span>
+            <span class="tag">Python (Pandas)</span>
+            <span class="tag">Data Modeling</span>
+            <span class="tag">Financial Analysis</span>
+        </div>
+    </article>
+
+</body>
+
+</html>
