@@ -80,10 +80,10 @@
     <a href="index.html" class="back-link">← Back to Portfolio</a>
 
     <article class="container">
-        <h1>2. Project Overview</h1>
+        <h1>Physician Vacation Revenue Impact Analysis</h1>
 
-        <h2>Project Title</h2>
-        <p><strong>Physician Vacation Revenue Impact Analysis</strong></p>
+        <img src="Table.png" alt="Physician Lost Compensation" class="physician-lost-compensation"
+            style="width: 100%; height: auto;">
 
         <h2>Problem Statement / Goal</h2>
         <p>
@@ -134,21 +134,35 @@
 
             <div
                 style="background: #282c34; color: #abb2bf; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-family: 'Courier New', Courier, monospace;">
-                <p style="color: #d19a66; margin-top: 0;">-- Average Daily Charges by Provider & Day of Week</p>
+                <p style="color: #d19a66; margin-top: 0;">-- Average Monthly Charges by Provider</p>
                 <span style="color: #c678dd;">WITH</span> avg_daily_charges <span style="color: #c678dd;">AS</span>
                 (<br>
-                &nbsp;&nbsp;<span style="color: #c678dd;">SELECT</span> provider_id,<br>
-                &nbsp;&nbsp;EXTRACT(DOW <span style="color: #c678dd;">FROM</span> service_date) <span
-                    style="color: #c678dd;">AS</span> day_of_week,<br>
-                &nbsp;&nbsp;<span style="color: #61afef;">AVG</span>(charge_amount) <span
-                    style="color: #c678dd;">AS</span> avg_charges<br>
-                &nbsp;&nbsp;<span style="color: #c678dd;">FROM</span> charges<br>
-                &nbsp;&nbsp;<span style="color: #c678dd;">WHERE</span> service_date >= CURRENT_DATE - INTERVAL '3
-                months'<br>
-                &nbsp;&nbsp;<span style="color: #c678dd;">GROUP BY</span> 1,2<br>
+                &nbsp;&nbsp;<span style="color: #c678dd;">SELECT</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;DATE_TRUNC('month', date_of_service) <span style="color: #c678dd;">AS</span>
+                month_of_service,<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;provider_display_name,<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;CASE WHEN COUNT(DISTINCT date_of_service) = 0 THEN NULL<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ELSE SUM(amount) / COUNT(DISTINCT date_of_service)<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;END <span style="color: #c678dd;">AS</span> avg_charges_per_day,<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;CASE WHEN COUNT(DISTINCT date_of_service) = 0 THEN NULL<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ELSE SUM(finance_expected) / COUNT(DISTINCT date_of_service)<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;END <span style="color: #c678dd;">AS</span> avg_collections_per_day,<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;CASE WHEN COUNT(DISTINCT date_of_service) = 0 THEN NULL<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ELSE SUM(finance_expected) / COUNT(DISTINCT date_of_service) *
+                0.32<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;END <span style="color: #c678dd;">AS</span> avg_doc_comp_per_day<br>
+                &nbsp;&nbsp;<span style="color: #c678dd;">FROM</span> {{
+                ref('stg_carecloud__charges_combined_carecloud_focus') }}<br>
+                &nbsp;&nbsp;<span style="color: #c678dd;">WHERE</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;date_of_service >= '2024-01-01'<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;AND date_of_service &lt; '2025-05-30'<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;AND procedure_grouping IN ('Office Visit', 'Diagnostics')<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;AND insurance_policy_type = 'FFS'<br>
+                &nbsp;&nbsp;<span style="color: #c678dd;">GROUP BY</span> 1, 2<br>
                 )<br>
                 <span style="color: #c678dd;">SELECT</span> * <span style="color: #c678dd;">FROM</span>
-                avg_daily_charges;
+                avg_daily_charges<br>
+                <span style="color: #c678dd;">ORDER BY</span> month_of_service, provider_display_name;
             </div>
 
             <p>
